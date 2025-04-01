@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Citizen Feedback System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This application accepts and displays feedback from Citizens on common issues
 
 ## Available Scripts
 
