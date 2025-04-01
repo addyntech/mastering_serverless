@@ -83,12 +83,13 @@ function App() {
 
       <h2>All Feedback</h2>
       <div className="feedback-list">
-        {feedback.map((f) => (
-          <div className="feedback-card" key={f.id}>
-            <p><strong>{f.name}</strong> ({f.email})</p>
-            <p>{f.message}</p>
-          </div>
-        ))}
+      {feedback.map((f) => (
+        <div className="feedback-card" key={f.id}>
+          <p><strong>{f.name}</strong> ({f.email})</p>
+          <p>{f.message}</p>
+        </div>
+      ))}
+
       </div>
     </div>
   );
