@@ -83,7 +83,7 @@ function App() {
 
       <h2>All Feedback</h2>
       <div className="feedback-list">
-      {feedback.map((f) => (
+      {[...feedback].reverse().map((f) => (
         <div className="feedback-card" key={f.id}>
           <p><strong>{f.name}</strong> ({f.email})</p>
           <p>{f.message}</p>
