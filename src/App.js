@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import "./App.css";
 
-// Read the API URL from the environment variable
 const API_URL = process.env.REACT_APP_API_URL;
 
 function App() {
@@ -9,7 +9,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Load feedback entries on initial render
   useEffect(() => {
     fetchFeedback();
   }, []);
@@ -18,22 +17,16 @@ function App() {
     try {
       const response = await fetch(API_URL);
       const data = await response.json();
-  
-      // If response includes Items (DynamoDB), use that
-      if (data.Items) {
+      if (Array.isArray(data)) {
+        setFeedback(data);
+      } else if (data.Items) {
         setFeedback(data.Items);
-      } else if (Array.isArray(data)) {
-        setFeedback(data); // Already an array
-      } else {
-        console.error("Unexpected response format", data);
-        setFeedback([]);
       }
     } catch (err) {
       console.error("Error fetching feedback:", err);
-      setError("Unable to load feedback at this time.");
+      setError("Unable to load feedback.");
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,62 +40,56 @@ function App() {
         body: JSON.stringify(form),
       });
 
-      if (!response.ok) throw new Error("API error");
+      if (!response.ok) throw new Error("Failed to submit feedback");
 
-      alert("Feedback submitted!");
       setForm({ name: "", email: "", message: "" });
-      fetchFeedback(); // Refresh the list
+      fetchFeedback();
     } catch (err) {
-      console.error("Submission error:", err);
-      setError("Failed to submit feedback. Try again.");
+      setError("Submission failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial" }}>
+    <div className="container">
       <h1>Feedback App</h1>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
+      <form className="feedback-form" onSubmit={handleSubmit}>
         <input
-          type="text"
           placeholder="Name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           required
-        /><br /><br />
-
+        />
         <input
-          type="email"
           placeholder="Email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           required
-        /><br /><br />
-
+        />
         <textarea
           placeholder="Message"
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
           required
-        /><br /><br />
-
+        />
         <button type="submit" disabled={loading}>
           {loading ? "Submitting..." : "Submit Feedback"}
         </button>
       </form>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error">{error}</p>}
 
       <h2>All Feedback</h2>
-      <ul>
+      <div className="feedback-list">
         {feedback.map((f) => (
-          <li key={f.id}>
-            <strong>{f.name}</strong> ({f.email}): {f.message}
-          </li>
+          <div className="feedback-card" key={f.id}>
+            <p><strong>{f.name}</strong> ({f.email})</p>
+            <p>{f.message}</p>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
